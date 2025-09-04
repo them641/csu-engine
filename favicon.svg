@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-label=">_">
+  <title>CSU Prompt Favicon</title>
+  <rect width="512" height="512" fill="#000000"/>
+  <!-- Editorial red prompt glyphs: >_ -->
+  <!-- The ">" as a stylized chevron -->
+  <polygon points="120,236 240,168 240,208 180,236 240,264 240,304" fill="#FF0055"/>
+  <!-- The underscore "_" as a rectangle -->
+  <rect x="270" y="320" width="140" height="20" rx="3" ry="3" fill="#FF0055"/>
+</svg>
