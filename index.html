@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSU PROTOCOL :: NARRATIVE DISRUPTION ENGINE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <style>
+        /* I. CORE PHILOSOPHY :: THE ACT OF RENDERING */
+        /* Render don’t explain. Prompt don’t pitch. Show don’t summarize. Perform the medium. */
+
+        :root {
+            --color-terminal-black: #000000;
+            --color-ghost-white: #F5F5F5;
+            --color-editorial-red: #FF0055;
+            --color-signal-blue: #8AC8FF;
+            --font-primary: 'JetBrains Mono', 'Fira Code', 'IBM Plex Mono', monospace;
+            --font-secondary: 'Merriweather', 'Georgia', 'Times New Roman', serif;
+            --header-height: 8vh;
+            --footer-height: 10vh;
+            --status-bar-height: 4vh;
+        }
+
+        /* Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        html, body {
+            height: 100%;
+            font-family: var(--font-primary);
+            background-color: var(--color-terminal-black);
+            color: var(--color-ghost-white);
+            overflow: hidden; /* Control scroll behavior */
+            position: relative;
+        }
+
+        /* III. VISUAL IDENTITY :: THE PROMPT SPACE */
+        /* A. COLOR LOGIC :: THE SIGNAL ARCHITECTURE */
+        /* B. TYPOGRAPHY PROTOCOL :: TEXT AS PERFORMANCE */
+
+        h1, h2, h3, h4, h5, h6, .ui-element {
+            text-transform: uppercase;
+            font-weight: 700; /* BOLD */
+        }
+
+        a {
+            color: var(--color-editorial-red);
+            text-decoration: none;
+            transition: color 0.1s linear; /* Brutalist transition */
+        }
+
+        a:hover {
+            color: var(--color-signal-blue);
+            cursor: none; /* Managed by custom cursor */
+        }
+
+        strong, .signal-highlight {
+            color: var(--color-signal-blue); /* Programmatic Emphasis */
+        }
+
+        blockquote {
+            font-family: var(--font-secondary);
+            font-style: normal; /* No Italics */
+            border-left: 2px solid var(--color-editorial-red);
+            padding-left: 1.5vw;
+            margin: 2vh 0;
+            color: var(--color-ghost-white); /* Merriweather for critique */
+        }
+
+        /* C. TEXTURES & OVERLAYS :: THE COMPILING REALITY */
+        /* Flat Matte Backgrounds, Visual Noise, Animated Scanlines / Vignette */
+
+        body::before, body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Scanlines */
+        body::before {
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.05) 0px,
+                rgba(0, 0, 0, 0.05) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+            animation: scanlines 0.5s infinite steps(2);
+        }
+
+        /* Vignette (subtle) */
+        body::after {
+            box-shadow: inset 0px 0px 10vw 0px rgba(0,0,0,0.8);
+        }
+
+        @keyframes scanlines {
+            from { background-position: 0 0; }
+            to { background-position: 0 100%; }
+        }
+
+        /* Subtle Noise */
+        body {
+            background-image: url('data:image/svg+xml;charset=utf-8,<svg viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="4" stitchTiles="stitch" result="noise" /><feColorMatrix in="noise" type="saturate" values="0" /><feBlend in="SourceGraphic" in2="noise" mode="overlay" opacity="0.03" /></filter><rect width="100%" height="100%" filter="url(%23n)" fill="%23000000" /></svg>');
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* D. SIGNATURE VISUAL ELEMENTS :: THE COMMANDING PRESENCE */
+        /* Logo, Cursor */
+
+        #csu-cursor {
+            position: fixed;
+            pointer-events: none;
+            z-index: 10000;
+            width: 8px;
+            height: 8px;
+            background-color: var(--color-signal-blue); /* Cursor color fixed to signal blue */
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.15s ease-out, height 0.15s ease-out, border-radius 0.15s ease-out;
+            animation: cursor-blink 1s infinite step-end;
+        }
+
+        #csu-cursor.active {
+            width: 2px;
+            height: 20px; /* Adjust height for bar */
+            border-radius: 0%;
+            animation: none; /* Stop blinking when active */
+        }
+
+        @keyframes cursor-blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
+        .header, .footer {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            background-color: var(--color-terminal-black);
+            padding: 0 2vw;
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            border-color: rgba(245, 245, 245, 0.1);
+        }
+
+        .header {
+            top: 0;
+            height: var(--header-height);
+            justify-content: space-between;
+            border-bottom: 1px solid;
+            padding-top: env(safe-area-inset-top, 0px); /* prevent notch overlap */
+        }
+
+        .header .logo {
+            font-size: 2.5vh;
+            color: var(--color-editorial-red);
+            font-weight: 700;
+            user-select: none;
+        }
+
+        .header .status {
+            font-size: 1.8vh;
+            color: var(--color-ghost-white);
+        }
+
+        .footer {
+            bottom: 0;
+            height: var(--footer-height);
+            justify-content: space-between;
+            border-top: 1px solid;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            gap: 1vw;
+            padding-bottom: env(safe-area-inset-bottom, 0px); /* avoid iOS home indicator overlap */
+        }
+
+        .nav-buttons, .mode-buttons {
+            display: flex;
+            gap: 1vw;
+        }
+
+        .nav-button, .mode-button {
+            background-color: transparent;
+            border: 1px solid var(--color-ghost-white);
+            color: var(--color-ghost-white);
+            padding: 1.2vh 1.8vw;
+            font-family: var(--font-primary);
+            font-size: 1.8vh;
+            cursor: none; /* Managed by custom cursor */
+            transition: all 0.1s linear;
+            text-transform: uppercase;
+            white-space: nowrap; /* Prevent button text from wrapping */
+        }
+
+        .nav-button:hover, .mode-button:hover {
+            background-color: var(--color-signal-blue);
+            color: var(--color-terminal-black);
+            border-color: var(--color-signal-blue);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background-color: transparent;
+            color: var(--color-ghost-white);
+            border-color: var(--color-ghost-white);
+        }
+
+        .nav-button.active {
+            background-color: var(--color-editorial-red);
+            color: var(--color-terminal-black);
+            border-color: var(--color-editorial-red);
+        }
+        .mode-button.active {
+            background-color: var(--color-signal-blue);
+            color: var(--color-terminal-black);
+            border-color: var(--color-signal-blue);
+        }
+        /* Mobile utility */
+        .mobile-only { display: none; }
+
+        .current-prompt {
+            flex-grow: 1; /* Allows it to take available space */
+            font-size: 1.8vh;
+            color: var(--color-signal-blue);
+            text-align: right; /* Aligned with the prompt idea */
+            padding-right: 1vw; /* Give it some space */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; /* For long prompts */
+            animation: prompt-fade 5s steps(1) infinite alternate;
+        }
+
+        @keyframes prompt-fade {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+
+
+        /* IV. LAYOUT & COMPOSITION :: THE REHEARSAL STAGE */
+        /* A. GENERAL LAYOUT PRINCIPLES: Minimalism, Density of Concept, Responsive */
+        /* B. PRESENTATION-SPECIFIC (PITCH DECKS): Slide Structure, Content Density, Navigation, Header/Footer */
+
+        .presentation-container {
+            position: relative;
+            /* compute and reuse stage height */
+            --stage-h: calc(100vh - var(--header-height) - var(--footer-height) - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+            height: var(--stage-h);
+            margin-top: var(--header-height);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2vw;
+            overflow: clip; /* To handle slide transitions without masking internal slide scroll */
+        }
+
+        .slides-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: clip; /* Keep transitions tidy; slides themselves manage scroll */
+        }
+
+        /* Remove accidental extra top spacing caused by first-child margins */
+        .slide > :first-child {
+            margin-top: 0;
+        }
+
+        /* Desktop spacing: reduce top padding so content sits closer under header */
+        @media (min-width: 1200px) {
+            .presentation-container {
+                padding: 0 2vw; /* no extra top/bottom gap; header/footer already reserve space */
+            }
+            .slide {
+                padding: 0.5vh 4.5vw; /* ultra-tight top/bottom */
+                gap: 0.6vh;          /* tighter spacing between blocks */
+            }
+            .slide[data-slide-id="generative-feedback-image"] h2 {
+                margin-bottom: 1.2vh; /* keep title compact above the image */
+            }
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start; /* don't center vertically to avoid clipping */
+            align-items: flex-start; /* Aligns content to left */
+            padding: 4vh 5vw; /* use vh so vertical math stays consistent */
+            gap: 2vh; /* breathing room between blocks */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out; /* V. INTERACTION & ANIMATION :: Transitions */
+            transform: translateX(0); /* For potential future slide-in transitions */
+            text-align: left;
+            background-color: rgba(0, 0, 0, 0.6); /* Semi-transparent black overlay for text readability */
+            overflow-y: auto; /* allow safe internal scroll when content exceeds stage */
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .slide h2 {
+            font-size: clamp(3vh, 4.2vw, 5.2vh);
+            margin-bottom: 2.2vh;
+            line-height: 1.2;
+            color: var(--color-ghost-white);
+            text-transform: uppercase; /* Headers are always uppercase */
+            letter-spacing: 0.05em; /* Explicit letter spacing for headers */
+        }
+
+        .slide p, .slide ul {
+            font-size: clamp(1.8vh, 2vw, 2.5vh);
+            max-width: 80vw;
+            line-height: 1.5;
+            margin-bottom: 2vh;
+            color: var(--color-ghost-white);
+            text-transform: none; /* Allow natural casing from HTML for body text */
+            letter-spacing: 0.02em; /* Subtle letter spacing for readability of body text */
+        }
+
+        .slide ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .slide ul li::before {
+            content: '> '; /* Command-line prompt style */
+            color: var(--color-editorial-red);
+        }
+
+        .slide img {
+            max-width: 60%;
+            max-height: 40vh;
+            object-fit: contain;
+            border: 1px solid var(--color-ghost-white);
+            margin-top: 3vh;
+            image-rendering: pixelated; /* To enforce digital look */
+            filter: grayscale(10%) contrast(1.1); /* Subtle digital effect */
+            transition: border-color 0.2s linear;
+        }
+
+        /* Specific sizing for Slide 6 image to ensure better scaling */
+        .slide[data-slide-id="generative-feedback-image"] {
+            align-items: center;    /* center content horizontally on this slide */
+            text-align: center;     /* center text/caption */
+        }
+        .slide[data-slide-id="generative-feedback-image"] img {
+            width: 100%;           /* allow it to scale fluidly */
+            max-width: 70vw;       /* cinematic width on desktop */
+            height: auto;          /* preserve aspect ratio */
+            /* Reserve ~22vh for H2+caption+paddings on most layouts */
+            max-height: calc(100vh - var(--header-height) - var(--footer-height) - 22vh);
+            object-fit: contain;   /* avoid cropping */
+            object-position: top center; /* visually anchor to top to reduce perceived top padding */
+        }
+
+        /* Desktop and up: assert percentage cap relative to the stage height */
+        @media (min-width: 1024px) {
+            .slide[data-slide-id="generative-feedback-image"] img {
+                /* never exceed 60% of stage height, and still honor the content budget */
+                max-height: min(calc(var(--stage-h) - 22vh), calc(var(--stage-h) * 0.34));
+            }
+        }
+
+        /* Keep caption width in sync with the image on Slide 6 */
+        .slide[data-slide-id="generative-feedback-image"] .image-caption {
+            max-width: 70vw;
+        }
+
+        .slide img.corrupt {
+            animation: image-glitch 1s infinite alternate;
+        }
+
+        @keyframes image-glitch {
+            0% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0, 0);
+            }
+            20% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0, 0);
+            }
+            21% {
+                clip-path: inset(20% 0 10% 0);
+                transform: translate(2px, -2px);
+            }
+            25% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0, 0);
+            }
+            30% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0, 0);
+            }
+            31% {
+                clip-path: inset(5% 0 5% 0);
+                transform: translate(-1px, 1px);
+            }
+            35% {
+                clip-path: inset(0 0 0 0);
+                transform: translate(0, 0);
+            }
+            60% {
+                filter: grayscale(10%) contrast(1.1);
+            }
+            61% {
+                filter: grayscale(80%) contrast(1.5) blur(1px);
+            }
+            63% {
+                filter: grayscale(10%) contrast(1.1);
+            }
+        }
+
+        /* VI. CONTENT CREATION :: THE COMPILED NARRATIVE */
+        /* Imagery: Never photos. Always screenshots. AI composites. 3D stills. Procedural renders. Let errors show. */
+
+        .image-caption {
+            font-size: 1.6vh;
+            margin-top: 1vh;
+            color: var(--color-ghost-white);
+            text-transform: lowercase; /* Captions are lowercase */
+            max-width: 60%;
+            letter-spacing: 0.01em;
+        }
+
+        /* Full Report / Long Form Content */
+        .full-report-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: calc(var(--header-height) + 2vh) 5vw calc(var(--footer-height) + 2vh) 5vw; /* Adjusted padding to clear header/footer */
+            overflow-y: auto; /* Scrollable main content area */
+            background-color: rgba(245, 245, 245, 0.95); /* Lighter background for readability */
+            color: var(--color-terminal-black); /* Dark text on light background */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+            transform: translateX(0);
+            z-index: 900; /* Below header/footer */
+        }
+
+        .full-report-container.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .full-report-container h1 { /* Main report title */
+            font-size: 5vh;
+            margin-top: 2vh;
+            margin-bottom: 3vh;
+            text-transform: uppercase;
+            color: var(--color-editorial-red);
+            letter-spacing: 0.05em;
+        }
+        .full-report-container h2 {
+            font-size: 4vh;
+            margin-top: 4vh;
+            margin-bottom: 2vh;
+            text-transform: uppercase;
+            color: var(--color-editorial-red);
+            letter-spacing: 0.05em;
+        }
+        .full-report-container h3 {
+            font-size: 3vh;
+            margin-top: 3vh;
+            margin-bottom: 1.5vh;
+            text-transform: uppercase;
+            color: var(--color-signal-blue);
+            letter-spacing: 0.04em;
+        }
+        .full-report-container h4 {
+            font-size: 2.5vh;
+            margin-top: 2.5vh;
+            margin-bottom: 1vh;
+            text-transform: uppercase;
+            color: var(--color-terminal-black); /* Dark text on light background */
+            letter-spacing: 0.03em;
+        }
+
+        .full-report-container p, .full-report-container ul, .full-report-container ol {
+            font-size: 2vh;
+            line-height: 1.7;
+            margin-bottom: 1.5vh;
+            text-transform: none; /* Allow natural casing from HTML for body text */
+            letter-spacing: 0.02em;
+        }
+        .full-report-container ul, .full-report-container ol {
+            padding-left: 3vw;
+        }
+        .full-report-container ul li::before {
+            content: '▫ '; /* Different bullet for report */
+            color: var(--color-editorial-red); /* Changed for contrast on light background */
+        }
+
+        .full-report-container strong {
+            color: var(--color-signal-blue);
+        }
+
+        .full-report-container img {
+            max-width: 80%;
+            height: auto;
+            display: block;
+            margin: 2vh auto;
+            border: 1px solid var(--color-terminal-black); /* Darker border for contrast */
+            image-rendering: pixelated;
+        }
+
+        .full-report-container .image-caption {
+            font-size: 1.8vh;
+            text-align: center;
+            max-width: 80%;
+            margin: 1vh auto 3vh auto;
+            text-transform: lowercase;
+            letter-spacing: 0.01em;
+            color: var(--color-terminal-black); /* Dark caption text */
+        }
+
+        /* Citation styling */
+        .citation-ref {
+            font-size: 0.7em; /* Smaller for superscript */
+            vertical-align: super;
+            color: var(--color-signal-blue);
+            cursor: pointer; /* Indicate interactivity */
+            text-decoration: none; /* Remove underline */
+        }
+        .citation-ref:hover {
+            color: var(--color-editorial-red);
+        }
+
+        .sources-section h2 {
+            margin-top: 5vh;
+            border-top: 1px solid rgba(0, 0, 0, 0.1); /* Darker border for light background */
+            padding-top: 3vh;
+        }
+        .sources-section ol {
+            padding-left: 2vw;
+        }
+        .sources-section li {
+            margin-bottom: 1vh;
+            font-size: 1.8vh;
+            line-height: 1.5;
+            letter-spacing: 0.01em;
+            color: var(--color-terminal-black); /* Dark text */
+        }
+        .sources-section li a {
+            color: var(--color-signal-blue);
+            text-decoration: underline;
+        }
+        .sources-section li a:hover {
+            color: var(--color-editorial-red);
+        }
+
+        /* Text Glitch Effect */
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+            cursor: none;
+            /* Ensure text-transform is NOT applied by this class to allow natural casing */
+            text-transform: none;
+        }
+
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-original-text); /* Use a new attribute to store original text for glitch */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--color-terminal-black); /* Glitch background */
+            color: var(--color-editorial-red); /* Glitch foreground color 1 */
+            overflow: hidden;
+            clip-path: inset(0 0 0 0);
+            opacity: 0;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .glitch-text::after {
+            color: var(--color-signal-blue); /* Glitch foreground color 2 */
+            left: 2px;
+            top: 2px;
+        }
+
+        .glitch-text:hover::before {
+            opacity: 1;
+            animation: glitch-before 0.7s infinite alternate-reverse;
+        }
+
+        .glitch-text:hover::after {
+            opacity: 1;
+            animation: glitch-after 0.7s infinite alternate-reverse;
+        }
+
+        @keyframes glitch-before {
+            0% {
+                clip-path: inset(90% 0 0 0);
+                transform: translateX(1px);
+            }
+            20% {
+                clip-path: inset(20% 0 70% 0);
+                transform: translateX(-1px);
+            }
+            40% {
+                clip-path: inset(70% 0 20% 0);
+                transform: translateX(1px);
+            }
+            60% {
+                clip-path: inset(40% 0 50% 0);
+                transform: translateX(-1px);
+            }
+            80% {
+                clip-path: inset(10% 0 80% 0);
+                transform: translateX(1px);
+            }
+            100% {
+                clip-path: inset(0 0 90% 0);
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes glitch-after {
+            0% {
+                clip-path: inset(20% 0 70% 0);
+                transform: translateX(-2px);
+            }
+            20% {
+                clip-path: inset(90% 0 0 0);
+                transform: translateX(2px);
+            }
+            40% {
+                clip-path: inset(40% 0 50% 0);
+                transform: translateX(-2px);
+            }
+            60% {
+                clip-path: inset(10% 0 80% 0);
+                transform: translateX(2px);
+            }
+            80% {
+                clip: inset(70% 0 20% 0);
+                transform: translateX(-2px);
+            }
+            100% {
+                clip-path: inset(0 0 20% 0);
+                transform: translateX(0);
+            }
+        }
+
+        /* VII. DEVIANCE MODE :: BREAKING THE FRAME */
+        /* Intentional Disruption */
+        .glitch-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--color-terminal-black);
+            z-index: 10001;
+            opacity: 0;
+            pointer-events: none;
+            animation: none; /* Controlled by JS */
+        }
+
+        @keyframes full-glitch {
+            0% { opacity: 0; filter: hue-rotate(0deg); transform: scale(1); }
+            10% { opacity: 1; filter: hue-rotate(90deg); transform: scale(1.02); }
+            20% { opacity: 0.8; filter: hue-rotate(180deg); transform: scale(0.98); }
+            30% { opacity: 1; filter: hue-rotate(270deg); transform: scale(1.01); }
+            40% { opacity: 0.9; filter: hue-rotate(0deg); transform: scale(0.99); }
+            50% { opacity: 1; filter: hue-rotate(45deg); transform: scale(1.01); }
+            60% { opacity: 0.8; filter: hue-rotate(135deg); transform: scale(0.99); }
+            70% { opacity: 1; filter: hue-rotate(225deg); transform: scale(1.02); }
+            80% { opacity: 0.9; filter: hue-rotate(315deg); transform: scale(0.98); }
+            90% { opacity: 1; filter: hue-rotate(0deg); transform: scale(1); }
+            100% { opacity: 0; filter: hue-rotate(0deg); transform: scale(1); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                justify-content: center;
+                gap: 1vh;
+                height: var(--header-height); /* Maintain a fixed height, content will stack */
+                padding: 0 1vw; /* More compact on mobile */
+            }
+            .header .logo {
+                font-size: 2vh;
+            }
+            .header .status {
+                font-size: 1.5vh;
+            }
+            .footer {
+                flex-direction: column;
+            }
+            .nav-button, .mode-button {
+                font-size: 1.6vh;
+                padding: 1.2vh 2.5vw;
+                white-space: nowrap;
+            }
+            .current-prompt {
+                display: none; /* Hide prompt text on mobile for space */
+            }
+            /* Mobile: show a single mode toggle and simplify prev/next */
+            .mobile-only { display: inline-flex; }
+            .mode-buttons { display: none; }
+            .nav-button { font-size: 0; min-width: 44px; min-height: 44px; padding: 0.6rem; }
+            #prev-btn::after { content: '◀'; font-size: 18px; line-height: 1; }
+            #next-btn::after { content: '▶'; font-size: 18px; line-height: 1; }
+            .footer { gap: 2vw; }
+            .presentation-container {
+                padding: 1vh 3vw; /* Reduce padding on mobile */
+            }
+            .slide h2 {
+                font-size: clamp(3vh, 6vw, 5vh);
+                align-items: center;
+                text-align: center;
+            }
+            .slide p, .slide ul {
+                max-width: 95vw; /* Wider text on smaller screens */
+                font-size: 1.8vh;
+            }
+            .slide img, .full-report-container img {
+                max-width: 90%;
+            }
+            /* Mobile tweak for Slide 6 image */
+            .slide[data-slide-id="generative-feedback-image"] img {
+                max-width: 95vw;
+                max-height: 45vh; /* slightly shorter on small screens to keep caption in view */
+            }
+            .slide[data-slide-id="generative-feedback-image"] .image-caption {
+                max-width: 95vw;
+            }
+            .image-caption {
+                max-width: 90%;
+                text-align: center;
+            }
+            .full-report-container {
+                padding: calc(var(--header-height) + 2vh) 5vw calc(var(--footer-height) + 2vh) 5vw;
+            }
+        }
+
+        /* Ultra-wide screens: pull image back a bit so it doesn't dominate */
+        @media (min-width: 1400px) {
+            .slide[data-slide-id="generative-feedback-image"] img {
+                max-width: 50vw;    /* narrower to help height */
+                /* height governed by calc() above to avoid re-clipping */
+                max-height: min(calc(var(--stage-h) - 22vh), calc(var(--stage-h) * 0.30));
+            }
+            .slide[data-slide-id="generative-feedback-image"] .image-caption {
+                max-width: 50vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="csu-cursor"></div>
+    <div class="glitch-screen" id="glitch-screen"></div>
+
+    <header class="header">
+        <div class="logo">>_</div>
+        <div class="status">CSU PROTOCOL // NARRATIVE DISRUPTION</div>
+    </header>
+
+    <div class="presentation-container" id="presentation-container">
+        <div class="slides-wrapper" id="slides-wrapper">
+            <!-- Slide 0: Title Slide -->
+            <div class="slide" id="slide-0" data-slide-id="csu-protocol-title">
+                <h2>CSU PROTOCOL: <br> NARRATIVE DISRUPTION ENGINE</h2>
+                <p>THE COMPUTATIONAL STORY UNIT IS A VISIONARY FRAMEWORK FOR POST-CINEMATIC CREATIVITY AND RESEARCH.</p>
+                <p>CSU IS NOT A SCHOOL FOR FILM—IT IS A MACHINE FOR WHAT COMES AFTER.</p>
+            </div>
+
+            <!-- Slide 1: Executive Summary -->
+            <div class="slide" id="slide-1" data-slide-id="exec-summary">
+                <h2>EXECUTIVE SUMMARY // VISION & FRAMEWORK</h2>
+                <p>CSU: a visionary framework for post-cinematic creativity and research. It is a technical research program and a creative production engine.</p>
+                <p>Blending computational media with narrative theory, CSU proposes a bold model of interdisciplinary practice.</p>
+                <p>AI fusion can catalyze a "<strong class="signal-highlight" data-original-text="0-marginal-cost storytelling">0-marginal-cost storytelling</strong>" revolution, spawning new labor paradigms.</p>
+            </div>
+
+            <!-- Slide 2: Post-Cinema Context -->
+            <div class="slide" id="slide-2" data-slide-id="post-cinema-context">
+                <h2>POST-CINEMA CONTEXT // DIGITAL TRANSFORMATION</h2>
+                <p>We live in an era of "<strong class="signal-highlight" data-original-text="post-cinema">post-cinema</strong>." Traditional film and media are transforming through digital convergence, interactivity, and AI-driven content.</p>
+                <p>New media forms (AR/VR, AI experiences) reshape and recontextualize older forms like film and television.</p>
+                <p>Hollywood has adapted to technologies that threatened its primacy. AI narrative tools are the latest catalyst.</p>
+            </div>
+
+            <!-- Slide 3: AI as Narrative Catalyst -->
+            <div class="slide" id="slide-3" data-slide-id="ai-narrative-catalyst">
+                <h2>AI AS NARRATIVE CATALYST // ALGORITHMS AS STORYTELLERS</h2>
+                <p>Recent AI breakthroughs (large language models, generative art) have turned algorithms into storytellers and collaborators.</p>
+                <p>AI-written and AI-directed films have moved from novelty to reality. Examples: "<strong class="signal-highlight" data-original-text="Sunspring">Sunspring</strong>" (2016) scripted by AI, "<strong class="signal-highlight" data-original-text="The Safe Zone">The Safe Zone</strong>" (2022) scripted and directed by ChatGPT.</p>
+                <p>AI-driven storytelling shows both promise and pitfalls: capable of astonishing creativity but also awkward mimicry.</p>
+            </div>
+
+            <!-- Slide 4: Narrative Disruption Engine -->
+            <div class="slide" id="slide-4" data-slide-id="narrative-disruption-engine">
+                <h2>NARRATIVE DISRUPTION // ENGINE ACTIVATED</h2>
+                <p>CSU is conceived as a "<strong class="signal-highlight" data-original-text="narrative disruption engine">narrative disruption engine</strong>" embracing this upheaval.</p>
+                <p>It is post-cinematic, moving beyond cinema as a physical medium. Narrative is a platform-agnostic phenomenon: computed, interactive, ambient.</p>
+                <p>Story is a living system, generated, simulated, tailored, and reassembled in real time.</p>
+            </div>
+
+            <!-- Slide 5: Core Tenets of CSU -->
+            <div class="slide" id="slide-5" data-slide-id="core-tenets">
+                <h2>CORE TENETS // MANIFESTO</h2>
+                <ul>
+                    <li>> <strong class="signal-highlight" data-original-text="Narrative First">Narrative First</strong>: Storytelling is core.</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Human-AI Co-Creation">Human-AI Co-Creation</strong>: AI as creative partner. "The storyteller is not obsolete – the storyteller is augmented."</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Disruption with Purpose">Disruption with Purpose</strong>: Break old forms, challenge dominant narratives.</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Interdisciplinarity and Hybridization">Interdisciplinarity and Hybridization</strong>: Fuse STEM & creative arts.</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Global and Inclusive">Global and Inclusive</strong>: Cultural diversity over homogenization.</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Ethical and Critical">Ethical and Critical</strong>: Ethics built-in, not afterthought.</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Play and Provocation">Play and Provocation</strong>: Tinker, hackathons, critical-design fictions.</li>
+                </ul>
+            </div>
+
+            <!-- Slide 6: Generative Image from Roadmap -->
+            <div class="slide" id="slide-6" data-slide-id="generative-feedback-image">
+                <h2>GENERATIVE FEEDBACK // THE COMPILING REALITY</h2>
+                <img src="https://s.yimg.com/ny/api/res/1.2/Kme2fG2d2MhAXVT_64Ul.g--/YXBwaWQ9aGlnaGxhbmRlcjt3PTk2MDtoPTcyMTtjZj13ZWJw/https://media.zenfs.com/en/the_conversation_us_articles_815/b6f2b03ccba808311e3a44ea4e5cc86d" alt="AI-generated visual from music video 'Closer'">
+                <p class="image-caption">AN AI-GENERATED VISUAL FROM THE MUSIC VIDEO "CLOSER" (DIR. MAU MORGÓ). SYMBOLIZES A GENERATION IMMERSED IN AND EXHAUSTED BY UBIQUITOUS DIGITAL STORIES. CSU ADDRESSES THIS REALITY BY SHAPING TOOLS THAT SERVE CREATORS RATHER THAN OVERWHELM THEM.</p>
+            </div>
+
+            <!-- Slide 7: Implementation Roadmap Phase 1 -->
+            <div class="slide" id="slide-7" data-slide-id="roadmap-phase1">
+                <h2>IMPLEMENTATION ROADMAP // PHASE 1: LAUNCH & PILOTS</h2>
+                <p>Establishment: Secure initial funding, form core team, officially launch CSU with "Narrative Futures" symposium.</p>
+                <p>Pilots (2-3 within a year):</p>
+                <ul>
+                    <li>> <strong class="signal-highlight" data-original-text="AI Storyteller-in-Residence">AI Storyteller-in-Residence</strong>: interactive installation.</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Generative Short Film">Generative Short Film</strong>: 5-minute AI-scripted/visualized film.</li>
+                    <li>> <strong class="signal-highlight" data-original-text="Narrative Analytics for Screenplays">Narrative Analytics for Screenplays</strong>: AI tool for plot structure analysis.</li>
+                </ul>
+            </div>
+
+            <!-- Slide 8: Implementation Roadmap Phase 2 & 3 -->
+            <div class="slide" id="slide-8" data-slide-id="roadmap-growth-leadership">
+                <h2>GROWTH & LEADERSHIP // PHASE 2 & 3</h2>
+                <p>Phase 2 (Years 2-3): Formalize structure. Hire faculty. Integrate curriculum. Expand projects (research & creative commissions). Global partnerships.</p>
+                <p>Phase 3 (Years 4-5): Refinement & Leadership. Elevate to Institute status. Launch CSU Press/Platform. Influence policy & society discussions on AI ethics.</p>
+                <p>Outcome: CSU-produced works make a mark. Graduates in influential positions. CSU performs syntax.</p>
+            </div>
+
+            <!-- Slide 9: Final Protocol -->
+            <div class="slide" id="slide-9" data-slide-id="final-protocol">
+                <h2>FINAL PROTOCOL // CORE STATEMENT</h2>
+                <p>FILM IS NO LONGER MADE. IT IS <strong class="signal-highlight">COMPUTED</strong>.</p>
+                <p>CSU IS NOT A SCHOOL FOR FILM—IT IS A MACHINE FOR WHAT COMES AFTER.</p>
+                <p>PROMPT IT. AUDIT IT. RENDER IT. WATCH WHAT EMERGES.</p>
+                <p>YOU ARE NOT FILMING. YOU ARE RENDERING. START OVER.</p>
+                <p>THIS ISN’T PRODUCTION DESIGN. IT’S PROMPT SPACE.</p>
+                <p>LET THE WORLD KNOW THAT CSU PERFORMS SYNTAX.</p>
+            </div>
+        </div>
+
+        <!-- Full Report Container -->
+        <div class="full-report-container" id="full-report-container">
+            <h1>CSU PROTOCOL: NARRATIVE DISRUPTION ENGINE</h1>
+
+            <h2>EXECUTIVE SUMMARY</h2>
+            <p>The Computational Story Unit (CSU) is a visionary framework for post-cinematic creativity and research. It serves simultaneously as a technical research program and a creative production engine, reimagining storytelling in the era of artificial intelligence. Blending cutting-edge computational media with timeless narrative theory, the CSU proposes a bold new model of interdisciplinary practice. This document outlines the CSU concept - part conceptual theory, part critical manifesto, part institutional blueprint - to engage university leadership, media scholars, technologists, and prospective partners in a shared venture. We cite global precedents (from the MIT Media Lab to AI art movements) and articulate why CSU's fusion of human and machine creativity can catalyze a "0-marginal-cost" storytelling revolution, spawning new creative labor paradigms and educational pathways. Ultimately, the CSU Protocol is a call to action to establish a disruptive engine for narrative innovation that will secure institutional leadership in the future of creative technology.</p>
+
+            <h2>INTRODUCTION: BEYOND CINEMA, BEYOND COMPUTATION</h2>
+            <h3>Post-Cinema Context:</h3>
+            <p>We live in an era of "post-cinema," where traditional film and media are being transformed by digital convergence, interactivity, and AI-driven content <sup class="citation-ref" id="ref-1">1</sup>. Classic cinematic storytelling is giving way to fluid, multimodal narratives spanning VR, gaming, social media, and algorithmic generation. As media theorist Jay David Bolter observes, new media forms (like AR/VR or AI experiences) actively reshape and recontextualize older forms such as film and television <sup class="citation-ref" id="ref-3">3</sup>. Hollywood has always adapted to technologies that threatened its primacy <sup class="citation-ref" id="ref-3">3</sup>, and today's AI narrative tools are the latest catalyst forcing evolution in how stories are conceived and consumed.</p>
+
+            <h3>AI as Narrative Catalyst:</h3>
+            <p>Recent breakthroughs in AI—particularly large language models and generative art—have turned algorithms into storytellers, collaborators, and even solo creators. AI-written and AI-directed films have moved from novelty to reality. For example, the 2016 short film “Sunspring" was entirely written by an AI neural network <sup class="citation-ref" id="ref-4">4</sup>, and by 2022 a filmmaker used ChatGPT to script and direct a short film ("The Safe Zone") complete with camera directions and DALL-E2 storyboard visuals <sup class="citation-ref" id="ref-5">5</sup>. What began as experiments are quickly scaling: entire music videos, shorts, and interactive dramas are now crafted with generative tools. AI-driven storytelling has demonstrated both promise and pitfalls - capable of astonishing creativity but also awkward mimicry – raising urgent questions about authorship, quality, and cultural impact <sup class="citation-ref" id="ref-6">6</sup>, <sup class="citation-ref" id="ref-7">7</sup>.</p>
+
+            <h3>Narrative Disruption Engine:</h3>
+            <p>The CSU is conceived as a "narrative disruption engine" that embraces this moment of upheaval. It is post-cinematic in that it moves beyond the cinema as a physical medium, treating narrative as a platform-agnostic phenomenon – something that can be computed, interactive, ambient, or immersive. It treats story not as a static screenplay or 90-minute film, but as a living system: one that can be generated, simulated, tailored, and reassembled in real time. By uniting creative writers, AI technologists, media scholars, and designers, the CSU aims to both study and invent the future of narrative form. In spirit, it recalls the interdisciplinary daring of institutions like the MIT Media Lab, an "interdisciplinary research lab that encourages the unconventional mixing and matching of seemingly disparate research areas" <sup class="citation-ref" id="ref-8">8</sup> but focused on the alchemy of story and code.</p>
+
+            <h3>Georgia Tech's Opportunity:</h3>
+            <p>Situated in a top technological university and in Georgia – a state now ranked #1 in US film production with 273 productions and $2.6B spent in FY2024 <sup class="citation-ref" id="ref-9">9</sup>, <sup class="citation-ref" id="ref-10">10</sup> – the CSU can position Georgia Tech as a hub of next-generation entertainment innovation. Atlanta's booming film industry ("Hollywood of the South") provides an economic and cultural backdrop ripe for disruption. By establishing the CSU, Georgia Tech could lead in training the new creative workforce that marries AI prowess with narrative artistry, ensuring that the region not only produces blockbusters on soundstages, but also invents the storytelling paradigms of tomorrow.</p>
+
+            <p>In summary, the CSU is both a research initiative and a manifesto: it asserts that storytelling is entering a radically new phase, one requiring critical inquiry, technical experimentation, and institutional support in equal measure. The following sections blend theoretical foundations, provocative propositions, concrete structural proposals, and an implementation roadmap to make this vision tangible.</p>
+
+            <h2>CONCEPTUAL FRAMEWORK: THEORY FOR A FUTURE OF NARRATIVES</h2>
+            <h3>Re-mediating Story: Post-Cinema Theory</h3>
+            <p>Theoretical groundwork for the CSU comes from media studies concepts like remediation and post-cinema. Bolter and Grusin's Remediation theory teaches us that each new medium incorporates and transforms earlier media <sup class="citation-ref" id="ref-3">3</sup>. We see this now as AI-generated video and VR “re-mediate” film – borrowing cinematic language while bending it into interactive or algorithmic forms. Bolter notes how Hollywood historically reacts defensively to new media that threaten its cultural status <sup class="citation-ref" id="ref-3">3</sup> from television to video games to VR. Post-cinema, a term used by scholars to describe the 21st-century media ecology, suggests cinema's conventions are being superseded by new narrative experiences (e.g. AR narratives, interactive films, narrative video games) that alter our sense of time, immersion, and authorship <sup class="citation-ref" id="ref-1">1</sup>, <sup class="citation-ref" id="ref-2">2</sup>. As cultures shift, so do the ways we tell stories <sup class="citation-ref" id="ref-2">2</sup>. The CSU's research agenda begins here: by analyzing how emerging technologies (AI, XR, immersive media) are not merely tools for distribution, but forces reshaping narrative structures themselves (e.g. non-linear storytelling, audience co-creation, infinite story worlds). We draw on thinkers like Steven Shaviro (on "post-cinematic affect") and Bolter (on how AR/VR demand new Hollywood storytelling strategies <sup class="citation-ref" id="ref-11">11</sup>) to inform our approach. The CSU will contribute new theory from practice – each creative experiment feeding back into media scholarship about what "story" can mean in an age of neural networks and ubiquitous computing.</p>
+
+            <h3>Narrative Theory Meets AI</h3>
+            <p>Far from being just engineering, the CSU treats narrative as a domain of deep humanistic importance. We align with scholars like Jill Walker Rettberg, who argues that AI narratives must be guided by narratology and cultural knowledge to avoid homogenizing storytelling <sup class="citation-ref" id="ref-12">12</sup>, <sup class="citation-ref" id="ref-13">13</sup>. Her AI Stories project, for instance, examines how large language models risk reinforcing dominant Western story structures at the expense of global diversity, and calls for a "new narratology” to shape AI development <sup class="citation-ref" id="ref-12">12</sup>, <sup class="citation-ref" id="ref-13">13</sup>. Following this insight, the CSU will embed critical narrative theory into technical R&D. We ask: How can algorithms understand plot, character, metaphor, and genre beyond statistical word patterns? Can narrative generation systems learn the "deep structures” of myth and storytelling (as Vladimir Propp or Roland Barthes outlined), and should they? This is a research question (computational narrative understanding) and an ethical one (ensuring cultural pluralism in machine-generated stories <sup class="citation-ref" id="ref-12">12</sup>). CSU research might incorporate formal narrative models (story grammars, trope databases) into AI, but also challenge them with experimental forms. The aim is an AI that is not a "stochastic parrot" merely remixing the web <sup class="citation-ref" id="ref-14">14</sup>, but a tool that storytellers can wield for genuine expression and novel forms. Narrative theorists on our team will join AI scientists to develop narrative intelligence that respects both universal patterns of story and the particularities that give stories soul.</p>
+
+            <h3>Techno-Aesthetics and Remixed Media</h3>
+            <p>The CSU operates at the intersection of technology and aesthetics – what some philosophers like Gilbert Simondon have termed techno-aesthetics. This perspective recognizes that human creativity and perception are continually shaped by technical extensions <sup class="citation-ref" id="ref-15">15</sup>. In CSU's context, algorithms themselves become aesthetic actors: the machine's "imagination" introduces new visuals, sounds, and linguistics that were previously unachievable. Early 21st-century AI art offers evidence of this: generative models have a signature style - blurry, morphing, surreal images - often arising from their mathematical underpinnings <sup class="citation-ref" id="ref-16">16</sup>, <sup class="citation-ref" id="ref-17">17</sup>. Rather than fight these machine aesthetics, CSU embraces them as part of a new artistic language. AI art movements of the 2010s and 2020s (from Google's psychedelic DeepDream visuals to GAN-generated portraiture) are direct precedents. When an AI-generated portrait (Edmond de Belamy) sold at Christie's for $432,500 in 2018 <sup class="citation-ref" id="ref-18">18</sup>, <sup class="citation-ref" id="ref-19">19</sup>, it signaled that AI had arrived as a new medium of artistic expression, “the arrival of AI art on the world auction stage" <sup class="citation-ref" id="ref-20">20</sup>, <sup class="citation-ref" id="ref-21">21</sup>. Critics noted the painting's eerie features – a blurred face, "mechanical-looking dots" in place of brushstrokes <sup class="citation-ref" id="ref-22">22</sup> – underscoring how the algorithm's hand yields a distinct aesthetic. In CSU projects, we will explore such aesthetics across narrative media: e.g. AI-generated film scenes that have a dreamlike continuity, or AI-composed music with inhuman complexity. We echo Bolter's observation that generative AI is essentially an "algorithmic remix or remediation" process - it learns from a collective archive of human-created images and texts, then re-synthesizes them <sup class="citation-ref" id="ref-23">23</sup>, <sup class="citation-ref" id="ref-24">24</sup>. Our view is that this algorithmic remixing, when done creatively, “constitute[s] a significant new form of expression" <sup class="citation-ref" id="ref-24">24</sup>. CSU will thus cultivate a techno-aesthetic mindset among creators: to see code as craft, algorithms as art materials, and glitches as inspiration.</p>
+
+            <h3>Cinematic Precedents:</h3>
+            <p>Historically, many avant-garde artists anticipated this fusion of computation and art. We draw inspiration from pioneers like John Whitney (early computer cinema), the Oulipo writers (using algorithms and constraints for literature), and even cinematic experiments like interactive films or hypertext fiction. Science fiction too prophesied the CSU's mission. Notably, writer Stanisław Lem imagined in the 1960s a machine poet ("Trurl's Electronic Bard") that could best any human poet in their own style <sup class="citation-ref" id="ref-25">25</sup>. In Lem's tale, the machine would listen to a challenger's poem and “compose an answer in exactly the same style, only two hundred and twenty to three hundred and forty-seven times better.” <sup class="citation-ref" id="ref-25">25</sup> This satire raises a question at the heart of CSU: if an AI can algorithmically optimize a story or poem, what does that mean for human creativity? Rather than see it as threat, we use such precedents to provoke new forms of play, collaboration, and critique in narrative practice. In short, CSU's conceptual foundation blends media theory, narratology, and techno-aesthetics to ground our experiments in a lineage of ideas – even as we project those ideas forward in radically new ways.</p>
+
+            <h3>Power, Control, and Resistance in Narrative Systems</h3>
+            <p>A critical layer of CSU's theory addresses who controls the narrative in an age of intelligent machines and corporate platforms. We invoke political theorist James C. Scott here, by analogy: Scott famously distinguished between "techne" (formal, standardized knowledge) and "metis" (practical, experience-based knowhow) <sup class="citation-ref" id="ref-26">26</sup>. Traditional mass media and algorithmic content feeds can be seen as a techne of storytelling – centralized, formulaic, geared toward predictable outcomes (box office hits, viral clicks). By contrast, the rich diversity of human storytelling – folk tales, personal anecdotes, subcultures' art – is like metis: contextual, uncodified, often resistant to homogenization. CSU's ethos is to preserve and amplify narrative metis even as we develop narrative techne. We strive to encode the tacit wisdom of human storytellers into our AI systems without flattening it. This approach aligns with Scott's view that powerful institutions may "write the basic script" but ordinary people will always find "room for maneuver to suggest subtly their disdain for the proceedings" <sup class="citation-ref" id="ref-27">27</sup>. In narrative terms, that means enabling grassroots disruption of top-down stories – using AI to tell the stories Hollywood or Silicon Valley won't. The CSU will champion pluralism and play in storytelling, preventing the "homogenization of global narratives by AI" that Rettberg warns against <sup class="citation-ref" id="ref-12">12</sup>, <sup class="citation-ref" id="ref-13">13</sup>. Our projects might include tools for communities to generate their own folklore, or systems that subvert algorithmic bias to surface unheard voices. This also informs our manifesto stance (see next section): narrative is a space of power; the CSU treats "who gets to tell the story" as a design question. By exploring new creative labor paradigms (discussed later), we aim for a future where narrative AI empowers creators and communities rather than replacing or silencing them.</p>
+
+            <h2>CORE TENETS AND MANIFESTO OF THE CSU</h2>
+            <p>At the intersection of theory and practice, we articulate the core tenets of the Computational Story Unit as a kind of manifesto. These principles guide our work and differentiate the CSU approach:</p>
+            <ul>
+                <li><strong>Narrative First:</strong> We assert that storytelling - not technology for its own sake - remains the core. Any technical innovation must serve narrative expression or exploration of how narratives work. We reject shallow demos of AI that generate gibberish stories; instead, we pursue meaningful narrative experiences (from emotionally resonant AI films to educative interactive fables).</li>
+                <li><strong>Human-AI Co-Creation:</strong> Rather than viewing AI as an autonomous creator, we champion co-creation. The CSU envisions AI as a creative partner – like a collaborator that can spark ideas, fill in details, or generate iterations at 0 marginal cost, while human artists provide vision, judgment, and cultural context. This symbiosis is key to preserving human agency. A motto might be: "The storyteller is not obsolete – the storyteller is augmented."</li>
+                <li><strong>Disruption with Purpose:</strong> "Narrative disruption" means we actively break old narrative forms to discover new ones. We draw on avant-garde and experimental arts (Dada, Situationists, AfroFuturists, etc.) and harness AI to push limits. But disruption is not aimless: it challenges dominant narratives (who is represented, what is a valid story) and the economic structures around them. For instance, we'll prototype zero-cost filmmaking pipelines that could let a tiny team produce a series rivaling a Hollywood production – disrupting economic barriers in storytelling.</li>
+                <li><strong>Interdisciplinarity and Hybridization:</strong> True to the Media Lab spirit, CSU thrives on mixing disciplines. A typical project team might include a machine learning PhD, a screenwriter, a digital artist, a cognitive scientist, and a critical theorist. We fuse STEM and creative arts at every level, believing innovation happens at the boundaries. (As a cultural analogy, consider how musician Mulatu Astatke created the new genre of Ethio-jazz by layering traditional Ethiopian scales with American jazz improvisation <sup class="citation-ref" id="ref-28">28</sup> – CSU aims for that kind of cross-pollination, but with code and story.)</li>
+                <li><strong>Global and Inclusive:</strong> The stories and traditions of the whole world are our palette. We intentionally seek non-Western narrative structures, marginalized voices, and polyglot data to train and inform our systems. In practice, this might mean partnerships with folklorists, translating datasets, or hosting storytelling workshops with diverse communities. We see the CSU as an antidote to one-size-fits-all narratives; it should be an engine of cultural diversity and understanding.</li>
+                <li><strong>Ethical and Critical:</strong> Following from the above, ethics are built-in, not an afterthought. We critically examine issues like intellectual property (who owns AI-generated content?), labor displacement (how to retrain and redeploy human creativity in the loop of automation), and representation (avoiding biases in generated characters or plots). We align with efforts to guide AI for human flourishing <sup class="citation-ref" id="ref-29">29</sup>, ensuring narrative tech augments rather than undermines humanity's collective storytelling heritage.</li>
+                <li><strong>Play and Provocation:</strong> Finally, CSU maintains a spirit of play. Innovation in art often comes from tinkering, hackathons, playful misuse of tools, or "what if" experiments. We will incorporate sandbox projects and encourage a manifesto-like boldness in our students and researchers. Not every CSU output will be a polished product; some will be provocative prototypes, critical-design fictions, or performances that ask uncomfortable questions. This playful R&D culture is essential to break free of legacy thinking and truly invent the future of narrative.</li>
+            </ul>
+            <p>Each of these tenets translates into concrete strategies in our program, from curriculum design to project selection, as outlined in later sections. Together they form the CSU Protocol – a guiding ethos for how we operate as a disruptive narrative engine.</p>
+            <img src="https://s.yimg.com/ny/api/res/1.2/3Ubj2nVmrTQWZaMZdCHHKg--/YXBwaWQ9aGlnaGxhbmRlcjt3PTI0MDA7aD0xODA0O2NmPXdlYnA-/https://media.zenfs.com/en/the_conversation_us_articles_815/b6f2b03ccba808311e3a44ea4e5cc86d" alt="AI-generated visual from music video 'Closer'">
+            <p class="image-caption">An AI-generated visual from the music video "Closer" (dir. Mau Morgó) portrays a young creator asleep amid glowing screens – symbolizing a generation immersed in and exhausted by ubiquitous digital stories <sup class="citation-ref" id="ref-34">34</sup>. The CSU addresses this reality by shaping tools that serve creators rather than overwhelm them.</p>
+
+            <h2>INSTITUTIONAL VISION AND STRUCTURE</h2>
+            <h3>Organizational Model</h3>
+            <p>The Computational Story Unit is envisioned as an interdisciplinary research lab and creative studio embedded within the university, with a structure comparable to high-impact media labs worldwide. It could be established as a joint initiative between Georgia Tech's College of Computing and College of Design/Liberal Arts (mirroring the structure of the existing Computational Media BS program which bridges computer science and media design). Alternatively, CSU could stand as an independent center or institute, reporting to university leadership to signal its strategic importance (much like how MIT's Media Lab stands somewhat apart from traditional departments). The key is flexibility and cross-pollination: faculty and students from Computer Science, Literature/Media/Culture, Interactive Computing, Architecture, Music Technology, and more would cohabit the CSU space.</p>
+            <p>We propose an open lab layout akin to MIT Media Lab's six-floor collaborative space – to encourage serendipitous mixing of ideas. The lab would house state-of-the-art production facilities: a black box theater for experimental performances, a "holodeck"-style immersive VR/AR studio, computing clusters for AI training, and more. This physical and organizational setup embodies our mantra: no single discipline “owns” the CSU; it is a boundary-crossing playground for all who speak the language of story, code, or ideally both.</p>
+
+            <h3>Precedents & Comparables:</h3>
+            <p>For benchmarking, consider that MIT Media Lab thrives by "encouraging unconventional mixing of disparate research areas" <sup class="citation-ref" id="ref-8">8</sup> under one roof, funded by consortiums of industry sponsors. USC's new Center for Generative AI and Society similarly created an "AI for Media & Storytelling" studio co-directed by cinema and engineering faculty <sup class="citation-ref" id="ref-30">30</sup>. In Europe, the Ars Electronica Futurelab and academic programs like NYU's Interactive Telecommunications Program (ITP) demonstrate how art+tech labs can produce both research and acclaimed creative work. The CSU will take lessons from these: we anticipate a membership model (industry partners contribute funds and get early access to tech and talent), public showcase events (annual CSU festival of narrative innovation, akin to a "Sundance for AI films"), and integration with academic programs (undergrad research opportunities, graduate thesis projects in the lab, etc.).</p>
+
+            <h2>CSU MISSION AND RESEARCH AREAS</h2>
+            <p>The mission of CSU can be summarized as: "Advance the art and science of storytelling through computation, and advance computation through the art of storytelling." Practically, we identify several focal research & creation areas under the CSU umbrella:</p>
+            <ul>
+                <li><strong>Generative Narrative AI:</strong> Developing algorithms that can generate story content – scripts, dialogues, plots, even narrative sound design or cinematography. This includes improving coherence of AI-generated stories, imbuing them with emotional and thematic depth, and allowing user interactivity. Example project: an AI "dungeon master" that can collaboratively improvise a narrative with players in a D&D-style game.</li>
+                <li><strong>Immersive and Interactive Storytelling:</strong> Pushing narrative into VR/AR, gaming, and interactive film. How can we create branching or personalized narratives that adapt in real-time to the audience? Example: an AR mobile story that unfolds differently based on the user's location and actions, effectively a narrative that "lives" in the city (perhaps in partnership with Atlanta's civic arts).</li>
+                <li><strong>Narrative Analytics and Understanding:</strong> Using AI to analyze stories (screenplays, novels, mythologies) to learn structural patterns or to assist creators. Example: tools that can predict audience engagement from a script, or suggest diverse narrative paths to a writer (like a smart story editor). A specific research question: can we build a "story DNA sequencer" that identifies tropes and archetypes in massive narrative datasets (from Grimm's fairy tales to Netflix series) and then use it to help create new variations?</li>
+                <li><strong>Creative Robotics and Performance:</strong> Extending storytelling into physical spaces with robots, IoT devices, or smart architecture. Example: a theater performance where one actor is an AI-driven robot whose lines and movements evolve each night, or an interactive installation where the "story" is told through lights, sound, and the movement of drones responding to audience input.</li>
+                <li><strong>Critical Media Experiments:</strong> Projects that are explicitly critical or artistic provocations, examining the implications of narrative tech. Example: a short film where all actors' likenesses are deepfaked from historical figures to critique IP and authenticity issues; or a social simulation that shows the spread of a narrative (meme) through a society, visualized for study.</li>
+            </ul>
+            <p>Each of these areas yields both research outputs (papers, patents) and creative outputs (films, games, art pieces). This dual impact is intentional: to speak to both scholarly metrics and cultural resonance. A researcher might publish a new algorithm for story generation at a top AI conference, and simultaneously that algorithm gets used to produce a prize-winning 48-hour film festival entry – embodying CSU's dual identity as lab and studio.</p>
+
+            <h2>EDUCATIONAL AND PEDAGOGICAL INTEGRATION</h2>
+            <p>CSU will also function as an educational innovation hub. We foresee new courses and degree tracks emerging from it. For instance:</p>
+            <ul>
+                <li><strong>A project-based CSU Studio Course</strong> open to graduate and advanced undergrads where interdisciplinary teams build a narrative prototype (e.g. an AI short film or interactive story installation) over a semester, guided by CSU faculty. This would be a cornerstone experience similar to how the Entertainment Technology Center (ETC) at Carnegie Mellon runs cross-disciplinary "building virtual worlds" projects.</li>
+                <li><strong>Workshops & Modules:</strong> short intensives on topics like "Storytelling with Machine Learning 101" or "Narrative Design for VR" that can be taken by students from computing, literature, or design backgrounds to gain literacy in each other's domains. This could also extend to professional education for industry storytellers (e.g. screenwriters who want to learn about AI tools).</li>
+                <li><strong>Integration with existing programs:</strong> Georgia Tech's BS in Computational Media already melds coding with creative media – CSU can provide research experiences and advanced electives for those students, ensuring they graduate as exactly the kind of talent the creative tech industry now seeks. Similarly, the Digital Media M.S./Ph.D. program can have a specialization in Computational Storytelling through CSU, attracting top students who want to combine humanistic research with technical implementation.</li>
+            </ul>
+            <p>Pedagogically, the CSU's presence on campus will help break down the silos of “technical” vs “creative” students. In the lab, a computer science PhD might learn narrative theory from a media studies peer, while an art student picks up Python skills from an AI researcher. This cross-training addresses a skills gap in industry - companies like Pixar, Netflix, or interactive media startups increasingly need individuals who are bilingual in story and code.</p>
+            <p>From a University leadership perspective, the CSU can be pitched as a magnet for talent and funding. It sits squarely in areas of national priority (AI and its societal impact, creative economies) and can yield the kind of high-profile outcomes that elevate an institution's reputation (think of the press around AI art auctions, or film festival awards for AI-assisted films, or major grants from NSF/National Endowment for the Arts for such work). By housing CSU, Georgia Tech would signal its commitment to leadership in the creative dimensions of technology - a forward-looking complement to its strengths in pure engineering.</p>
+
+            <h2>PARTNERSHIP AND FUNDING STRATEGY</h2>
+            <p>The CSU's hybrid nature opens diverse funding avenues:</p>
+            <ul>
+                <li><strong>Research Grants:</strong> On the science side, we'll pursue grants in AI (e.g. NSF programs on AI, human-computer interaction, or the NSF/NEH “Documenting Endangered Languages" if using AI to preserve oral storytelling, etc.). The presence of humanities and arts might attract Mellon Foundation or NEH digital humanities grants. A project on, say, narrative for education or health could attract NIH or foundation funding (storytelling applied to therapy or training).</li>
+                <li><strong>Creative Grants:</strong> We can seek support from arts councils (National Endowment for the Arts, state arts grants) for our production projects and exhibitions. There's growing recognition of "interactive media" and "digital storytelling" in art funding streams.</li>
+                <li><strong>Industry Partnerships:</strong> Much like Media Lab's member consortium, CSU can invite media and tech companies to sponsor. Potential partners range from film/TV and gaming companies (Disney, Netflix, WarnerMedia, Electronic Arts) interested in narrative tech, to tech giants (Google, Meta, Microsoft) focusing on AI creativity tools, to newer AI startups in content creation. In exchange for funding, these partners get access to prototypes, IP licensing, and recruitment pipelines for our graduates. Given Georgia's film industry boom and Atlanta's status as a growing tech hub, local studios and startups might also invest to tap into CSU's expertise.</li>
+                <li><strong>Entrepreneurship & IP:</strong> The CSU could spin out startups or license technologies (e.g. a particularly successful narrative AI tool could become a commercial product). An internal incubator program might be set up for teams with promising ideas, with support from the university's entrepreneurship center. This appeals to funders who like sustainable models and potential ROI.</li>
+                <li><strong>Philanthropy:</strong> A visionary philanthropist interested in the future of education, art, or social impact of AI might endow the CSU (naming opportunities, etc.). The interdisciplinary, future-forward, human-centered mission of CSU is the kind of "moonshot" initiative that can inspire large gifts.</li>
+            </ul>
+            <p>In framing funding proposals, we emphasize how CSU addresses both economic innovation (leading the next content industries, which are massive—global entertainment is a $2+ trillion market) and cultural stewardship (ensuring AI doesn't erode but enriches human narrative traditions). We also highlight workforce development: CSU trains students in cutting-edge skills, aligning with calls to expand and diversify AI education <sup class="citation-ref" id="ref-31">31</sup>, and prepares them for jobs of the future (some of which, like "prompt engineer" or "narrative designer for AI", are just now emerging).</p>
+
+            <h2>ECONOMIC AND SOCIETAL IMPLICATIONS</h2>
+            <h3>Towards 0-Marginal-Cost Storytelling</h3>
+            <p>One of the most disruptive aspects of computational story generation is the potential for near-zero marginal cost content creation. In traditional filmmaking or publishing, creating each additional minute of footage or copy of a book has a significant cost in labor and materials. But once a storytelling engine (an AI model, for instance) is trained, generating the next variation or instance of a story is comparatively cheap and fast - often just the cost of computing. This is analogous to trends in other digital goods, and recalls Jeremy Rifkin's vision of a "Zero Marginal Cost Society”. In practice, we already see glimpses: a filmmaker can produce an AI-animated short film on a laptop in a few weeks, or a novelist can have an AI-based text generator draft dozens of chapters in hours, far faster than any human writer alone. As one USC researcher noted, generative tools “allow filmmakers without access to major studio budgets to make imaginative short films for the price of a monthly subscription” <sup class="citation-ref" id="ref-32">32</sup>.</p>
+            <p>For economics, this suggests a dramatic lowering of entry barriers in the storytelling industries. A small indie game studio or a class of students could create content on a scale that once required entire studios. The CSU is deeply interested in these implications. We experiment with pipelines where, for example, an AI can generate realistic video scenes on demand - essentially bringing the cost of additional footage to near-zero (after an initial investment in model training and setup). If narrative creation becomes infinitely scalable and cheap, what new business models arise? Perhaps personalized stories commissioned by individuals, or endless adaptive narratives on streaming platforms that adjust to viewer preferences.</p>
+            <p>However, zero marginal cost storytelling also poses a challenge: potential oversupply of content and the need for new curation mechanisms. The value in a world of abundant stories shifts from production to filtering and context – human creators might focus on designing the narrative universe and high-level arcs, letting AI fill in details. The CSU can serve as a think tank for these economic shifts, advising media companies on how to adapt (much like how the music industry had to adapt to digital MP3s and infinite copies). We might publish white papers on sustainable creative economies in the age of AI, or prototype platforms that fairly compensate both human and AI contributions.</p>
+
+            <h2>NEW CREATIVE LABOR PARADIGMS</h2>
+            <p>Perhaps the most immediate societal impact of the Narrative Disruption Engine is on creative labor. Understandably, there are anxieties in creative professions: witness the 2023 Hollywood writers' and actors' strikes, where a key issue was protecting livelihoods from AI automation <sup class="citation-ref" id="ref-6">6</sup>. The CSU engages with this not only by influencing policy (our research can inform guidelines for AI use in writers' rooms, for instance) but also by actively defining new roles for human creators. We posit that rather than replace creatives, AI will change the nature of creative jobs – and we intend to demonstrate positive examples of that.</p>
+            <p>Some emerging paradigms and roles include:</p>
+            <ul>
+                <li><strong>Narrative Engineers / Architects:</strong> Professionals who design the frameworks and rules within which AI generates stories. They might not write every line of dialogue, but they encode a world's lore, character backstories, and narrative constraints that the AI then uses. This is analogous to how game designers set up systems in which gameplay emerges.</li>
+                <li><strong>AI Whisperers / Prompt Designers:</strong> Often referred to as prompt engineers, these are creatives skilled at communicating with AI systems to get desired outputs. They craft prompts or training data in a way that coaxes high-quality, original content from models. (There's already job postings for such roles in industries from marketing to game design.)</li>
+                <li><strong>Synthetic Performers and Editors:</strong> Actors may lend their likeness and voice for AI to generate performance at scale (the ethical framework for this needs careful thought, but potentially allows an actor to "perform" in many projects concurrently via their digital twin). Editors and cinematographers might work not by cutting physical footage but by iteratively refining AI-generated scenes – a process of guiding the AI's creative choices, almost like coaching a virtual crew.</li>
+                <li><strong>Cross-cultural Narrative Curators:</strong> Given AI can remix global content, there may be roles for specialists who ensure that an AI's output remains authentic to specific cultural storytelling traditions. For example, someone who understands Nollywood style or Japanese anime tropes could supervise AI-generated content in those domains.</li>
+            </ul>
+            <p>The CSU will prototype workflows incorporating such roles, essentially writing the playbook for creative collaboration with AI. By doing projects in which, say, students team up with an AI writing assistant to produce a web series, we identify what skills are needed and how the work divides between human and machine. Our findings can then inform curricula (ensuring graduates are prepared for these roles) and reassure industry that creativity can remain a fundamentally human endeavor, amplified rather than diminished by AI. It's notable that even in early AI-driven productions, human creativity is crucial: Richard Juan's <strong class="signal-highlight">The Safe Zone</strong> short film might have had an AI-written script, but it took a human director's eye to turn it into a beautifully shot film <sup class="citation-ref" id="ref-7">7</sup> (and indeed reviewers noted the AI's dialogue was clunky, highlighting where humans still excel <sup class="citation-ref" id="ref-33">33</sup>). CSU's stance is that every automated or generative leap opens up new tasks - e.g., if AI does 80% of the grunt work, creators can spend more time on concept, polishing, and high-level innovation.</p>
+            <p>There's also a democratization angle: if AI lowers skill barriers, more people can create. We may see an explosion of "producers" analogous to how blogging and YouTube let everyone be a publisher or filmmaker. The CSU will study and guide this participatory culture of storytelling. This includes understanding audience co-creation (audiences might start to steer AI narratives in real time – a kind of mass improvisation) and the community management around such experiences.</p>
+
+            <h2>CULTURAL AND PEDAGOGICAL IMPLICATIONS</h2>
+            <p>Culturally, the Narrative Disruption Engine challenges some long-standing notions: the singular auteur, the fixed canon of literature or film, the passive consumer. In their place, we foresee:</p>
+            <ul>
+                <li><strong>Algorithmic Remixes of the Canon:</strong> Just as DJs remix music, tomorrow's storytellers might remix story universes. Imagine feeding all of Shakespeare into an AI and generating new plays in iambic pentameter on contemporary issues – is the result co-authored by Shakespeare or entirely new? The CSU can curate showcases of such possibilities, prompting debate on authorship and originality.</li>
+                <li><strong>Personalized Mythmaking:</strong> Societies have long had shared myths; AI might enable each individual to have personalized mythologies or custom narrative therapies. For example, an AI storyteller could generate a tale specifically to help a child cope with a personal challenge, blending that child's favorites (say, a superhero and a pet) into a healing narrative. The CSU will partner with psychologists and educators to explore storytelling for well-being and learning, powered by AI.</li>
+            </ul>
+            <p>From an educational standpoint (within the university and broadly), we need to teach narrative literacy for the AI age. This means not only teaching tech students about story, but also teaching all students critical skills to navigate a world of AI-generated media (how to detect deepfakes or narrative manipulation, understanding that any media might be customized by an algorithm for them, etc.). The CSU could collaborate with digital literacy initiatives to produce guides or courses on "narrative and AI literacy" for the public.</p>
+            <p>On campus, CSU's influence could modernize arts and humanities education, showing that learning to code or understanding AI is now essential even for creative disciplines. Conversely, engineering students might flock to CSU workshops because creating a short film with AI is a fresh, motivating way to apply their skills. This blending is itself pedagogically innovative, breaking the mold of STEM vs. STEAM – demonstrating a true integration as advocated by many educational reformers.</p>
+            <p>In short, the CSU is not only reacting to economic and cultural shifts – it is proactively designing how those shifts play out, aiming for empowerment over alienation. By focusing on low-cost creation and new jobs, we maximize the upside of AI in storytelling; by focusing on ethics and literacy, we mitigate the downsides (like misinformation or loss of human touch).</p>
+
+            <h2>IMPLEMENTATION ROADMAP</h2>
+            <h3>Phase 1 (Year 1): Launch and Pilot Projects</h3>
+            <p><strong>Establishment:</strong> Secure initial funding (e.g., internal university seed grant or a foundational donor). Form a core team by pulling interested faculty from relevant departments. Officially launch the CSU with a symposium to draw attention – perhaps titled “Narrative Futures” – inviting speakers like Jay David Bolter, Spike Jonze (for creative perspective on AI as in his film <strong class="signal-highlight">Her</strong>), and Jill Rettberg. This both signals our interdisciplinary intent and sets a visionary tone.</p>
+            <p><strong>Pilots:</strong> Identify 2-3 pilot projects that embody CSU's ethos and are achievable within a year. For example:</p>
+            <ul>
+                <li><strong>Pilot 1: "AI Storyteller-in-Residence”</strong> – build a language model fine-tuned on a diverse corpus of global folk tales and GT's archives, deploy it in an interactive installation on campus where anyone can prompt it to tell a story. Study user engagement and the diversity of its narratives.</li>
+                <li><strong>Pilot 2: "Generative Short Film"</strong> – a small team creates a 5-minute short film using AI for script, visuals (using generative image/video models), and music. Humans direct the overall vision and edit. Enter it into film festivals (and use it as a demo for stakeholders). Document the process to develop best practices for human-AI co-creation in film.</li>
+                <li><strong>Pilot 3: "Narrative Analytics for Screenplays"</strong> – a research-focused project: take 1000 movie scripts, use AI to analyze plot structure, character arcs, etc. Develop a prototype tool that can suggest improvements or flag clichés in a new script. Partner with the GT Film Academy or writing programs for testing.</li>
+            </ul>
+            <p>These pilots will produce tangible outputs (installation, film, software tool) that we can show to funders and use to iterate our approach. They also serve as recruitment tools – showcasing to students what exciting work they can do in CSU.</p>
+
+            <h3>Infrastructure:</h3>
+            <p>Set up the physical space (even if temporary) – perhaps allocate a floor in the Technology Square Research Building or another innovation hub on campus to CSU, co-locating initial team members. Equip it with essential gear (workstations with powerful GPUs, prototyping tools like AR/VR headsets, a small studio area).</p>
+            <h3>Metrics for Phase 1:</h3>
+            <p>Successfully complete pilots, attract at least one significant external grant or gift, and build a pipeline of interested collaborators (faculty affiliates, industry curious to partner). We also aim to generate media coverage from the get-go, to raise profile.</p>
+
+            <h3>Phase 2 (Years 2-3): Growth and Formalization</h3>
+            <h3>Faculty & Talent:</h3>
+            <p>Hire dedicated faculty positions or research scientists in key areas (e.g., one in AI narrative systems, one in interactive media design, one in digital storytelling/performance). These could be joint appointments across departments to maintain interdisciplinary ties. Also recruit artist/technologist fellows (perhaps 1-year visiting positions for notable practitioners in AI art or experimental filmmaking).</p>
+            <h3>Curriculum Integration:</h3>
+            <p>By year 2, spin up the first CSU cross-listed course. For example, "Computational Story Lab" as a project studio course described earlier. If well-subscribed, propose a formal certificate or concentration in Computational Storytelling. Possibly begin a Distinguished Lecture series open to campus/public featuring luminaries at the intersection of narrative and tech (e.g., invite novelist-teamed-with-AI experiments, game writers using procedural generation, etc.).</p>
+            <h3>Project Expansion:</h3>
+            <p>Build on pilots and start new projects emphasizing the full dual nature: - Research proposals: e.g. submit to NSF a project on "Evaluating Audience Empathy in AI-Generated Characters" or to NEH a digital humanities grant on "Preserving Indigenous Storytelling with AI translation and narrative generation". - Creative commissions: e.g. partner with a museum or film festival to create an installation or short film as a centerpiece showcasing CSU tech (imagine an interactive film exhibit at the High Museum of Art in Atlanta, for instance). - Internal initiatives: e.g. a "CSU Narrative Hackathon" each semester where students and faculty team up for a weekend to prototype wild ideas (this fosters community and draws new people in).</p>
+            <h3>Global Partnerships:</h3>
+            <p>Around year 3, aim to have at least one international collaboration. Maybe with MIT Open Documentary Lab on an AI documentary project, or with a lab in Europe/Asia (for example, the University of Tokyo's storytelling tech group, or a studio in Nairobi to test global applicability). This underscores CSU's global stance and could lead to student exchange or joint funding opportunities.</p>
+            <h3>Funding & Sustainability:</h3>
+            <p>By end of Phase 2, secure multi-year funding commitments – whether through a major grant (e.g. an NSF AI Center of Excellence or an industry consortium fund). Also pitch a naming gift to permanently endow CSU (target a visionary donor excited by arts+AI). Establish an advisory board including representatives from industry and notable academics/artists to keep our work relevant and get connections.</p>
+
+            <h3>Metrics for Phase 2:</h3>
+            <p>Publications in top venues (e.g. ACM Multimedia, AAAI for technical; SIGGRAPH or CHI for creative tech; maybe even Sundance or Tribeca for showcasing a film). Successful student outcomes (students from CSU landing cutting-edge jobs or starting companies, demonstrating the "talent hub" effect). And integration within GT - by now CSU should be known across campus, involved in various initiatives (like smart cities storytelling, or health communication if relevant) to ensure longevity.</p>
+
+            <h3>Phase 3 (Years 4-5): Refinement and Leadership</h3>
+            <h3>Institute Status:</h3>
+            <p>Possibly elevate CSU to an Institute-level center at GT, solidifying budget and administrative support. Could consider creating a Master's program in Computational Storytelling/Interactive Narrative that is housed in CSU for even more direct talent cultivation.</p>
+            <h3>Signature Initiatives:</h3>
+            <p>Launch something like CSU Press or Platform - e.g. an online journal or portal for publishing AI-assisted interactive literature and research commentary, becoming a go-to source for this emerging field. Or an annual “CSU Festival" that combines an academic conference and a media festival for computational stories (think TED meets SXSW meets academic symposium, hosted in Atlanta).</p>
+            <h3>Policy and Society:</h3>
+            <p>By year 5, CSU should be contributing to conversations beyond academia: white papers on ethical standards for AI in media, consultations with guilds/unions on how to adapt (we might help craft best practices so that AI is a tool in writers' rooms, not a threat, for instance). We could also collaborate with policymakers on initiatives to support creative AI (grants, public programs, etc.). The CSU could become a thought leader cited in discussions about the future of work or the future of entertainment.</p>
+            <h3>Continual R&D:</h3>
+            <p>Technologically, this period will see whatever the next wave after current AI (maybe more advanced generative models, or brain-computer interfaces for storytelling). CSU remains agile to incorporate these. For example, if AR glasses become widespread, we might dive into “persistent AR narratives" in daily life. If quantum computing opens new possibilities for simulation, we explore that for complex storytelling. The ethos remains future-forward.</p>
+            <h3>Outcome Goals:</h3>
+            <p>The ultimate success by year 5 would be that CSU-produced works or technologies have made a mark: e.g. a feature-length film created with significant AI involvement that garners critical acclaim, or an open-source storytelling engine adopted by indie creators worldwide, or even a startup spin-off that is valued highly. Additionally, we aim for our graduates and affiliates to be in influential positions, spreading the CSU approach across industries and academia.</p>
+
+            <h2>CONCLUSION: TOWARD A NEW NARRATIVE FRONTIER</h2>
+            <p>The CSU Protocol: Narrative Disruption Engine outlined in this white paper is both an imaginative leap and an actionable plan. We have painted a picture of a lab-studio hybrid that stands at the vanguard of storytelling's future – one foot in the rich soil of narrative tradition and theory, and the other in the cutting-edge of AI and media technology.</p>
+            <p>By blending conceptual theory (from Bolter's remediation to Scott's insights on systems and metis) with manifesto-grade provocations, we articulate why such an endeavor is urgently needed. By detailing institutional structure, precedents like the MIT Media Lab, and practical roadmaps, we illustrate how it can be realized. The CSU is envisioned as a living organism within the university: feeding on interdisciplinarity, breathing out creativity and research in equal measure, adapting constantly to the evolving tech/culture landscape.</p>
+            <p>We stand on the cusp of a narrative revolution. Just as the printing press, cinema, and the internet each disrupted how stories propagate and who gets to tell them, AI and computational media are now redefining authorship, creativity, and audience. This prospectus does not view that disruption with fear, but with a critical optimism: if guided by the right principles – human-centric design, inclusivity, ethical reflection, and fearless experimentation – the future of storytelling could be more democratic, diverse, and magical than ever before. The Computational Story Unit aims to ensure that outcome.</p>
+            <p>In the words of one fictional AI (Spike Jonze's <strong class="signal-highlight">Her</strong>), spoken to comfort a human: "The past is just a story we tell ourselves." Now it's time to invent the future stories we will tell – about ourselves, our world, and our dreams - with the Narrative Disruption Engine as a beacon lighting the way. The CSU invites Georgia Tech and its partners to join in authoring this next chapter of innovation, where every imagination (human or machine) can find its voice in the grand new symphony of storytelling.</p>
+
+            <h2>SOURCES AND REFERENCES</h2>
+            <ol>
+                <li id="source-1"><a href="https://necs.org/conference/2024/university-of-economics-izmir" target="_blank">Exploring Post-Cinema – The 22nd NECS Graduate Workshop</a></li>
+                <li id="source-2"><a href="https://singularityhub.com/2024/12/10/blurry-morphing-and-surreal-a-new-ai-aesthetic-is-emerging-in-film/" target="_blank">Blurry, Morphing, and Surreal: A New AI Aesthetic Is Emerging in Film</a></li>
+                <li id="source-3"><a href="https://www.techsquareatl.com/tech-square-news/2025/4/9/bnt6qam4sqx4r63f3n8g9erl6sq4fa" target="_blank">Jay Bolter On the Significance of AR, VR, and AI in Hollywood — Tech Square ATL</a></li>
+                <li id="source-4"><a href="https://en.wikipedia.org/wiki/Sunspring" target="_blank">Sunspring - Wikipedia</a></li>
+                <li id="source-5"><a href="https://spyscape.com/article/ai-film-roundup" target="_blank">The AI List: The Best (and Weirdest) AI Generated Films</a></li>
+                <li id="source-6"><a href="https://entertainment.inquirer.net/477117/the-safe-zone-the-first-film-written-and-directed-by-artificial-intelligence" target="_blank">'The Safe Zone': The first film written and directed by artificial intelligence | Inquirer Entertainment</a>
+                    <span id="source-7" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-8"><a href="https://orbit.mit.edu/resources/mit-media-lab" target="_blank">MIT Media Lab | MIT Orbit</a></li>
+                <li id="source-9"><a href="https://georgia.org/blog/georgia-looking-ahead-future-film" target="_blank">Georgia Ranked No. 1 in Film Production | Georgia Department of Economic Development</a>
+                    <span id="source-10" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-11"><a href="https://neurosciencenews.com/ai-stories-llms-25904/" target="_blank">AI STORIES: A New Vision for AI and Narratives - Neuroscience News</a>
+                    <span id="source-12" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-13" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-14"><a href="https://medium.com/@jamestplunkett/metis-matters-6a48270c2731" target="_blank">Metis matters. A detour into James C Scott via Dan... | by James Plunkett | Medium</a></li>
+                <li id="source-15"><a href="https://link.springer.com/chapter/10.1007/978-3-030-54522-2_16" target="_blank">Techno-Aesthetics and Forms of the Imagination | SpringerLink</a></li>
+                <li id="source-16"><a href="https://www.bbc.com/news/technology-45980863" target="_blank">Portrait by AI program sells for $432,000</a>
+                    <span id="source-17" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-18"><a href="https://www.christies.com/en/stories/a-collaboration-between-two-artists-one-human-one-a-machine-0cd01f4e232f4279a525a446d60d4cd1" target="_blank">Can a portrait, created by AI, be called art? | Christie's</a>
+                    <span id="source-19" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-20"><a href="https://www.theguardian.com/artanddesign/shortcuts/2018/oct/26/call-that-art-can-a-computer-be-a-painter" target="_blank">A portrait created by AI just sold for $432,000. But is it really art? | Painting | The Guardian</a>
+                    <span id="source-21" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-22"><a href="https://mediarep.org/bitstreams/34b804d2-c446-4440-b8b8-e5b6af0370ac/download" target="_blank">AI Generative Art as Algorithmic Remediation</a>
+                    <span id="source-23" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-24"><a href="https://www.goodreads.com/quotes/10084488-the-machine-was-self-programming-however-and-in-addition-had-a" target="_blank">Quote by Stanisław Lem: "The machine was self-programming, however, and ..."</a>
+                    <span id="source-25" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+                <li id="source-26"><a href="https://sts.hks.harvard.edu/research/platforms/imaginaries/i.ant/imaginations-of-resistance/" target="_blank">Harvard STS Program » Research » Platforms » Sociotechnical Imaginaries » Antecedents » Imaginations of Resistance</a></li>
+                <li id="source-27"><a href="https://www.nationalgeographic.com/travel/article/traveling-troubadour-mulatu-astatke" target="_blank">Traveling Troubadour: Mulatu Astatke</a></li>
+                <li id="source-28"><a href="https://www.forbes.com/sites/traceyfollows/2025/04/14/mit-media-lab-to-put-human-flourishing-at-the-heart-of-ai-rd/" target="_blank">MIT Media Lab To Put Human Flourishing At The Heart Of AI R&D</a></li>
+                <li id="source-34"><a href="https://www.wired.com/story/ai-filmmaker-zone-out/" target="_blank">AI Made a Movie With a 'Silicon Valley' Star—and the Results Are Nightmarishly Encouraging | WIRED</a>
+                    <span id="source-29" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-30" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-31" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-32" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-33" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-35" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-36" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-37" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-38" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-39" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-40" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-41" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-42" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-43" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-44" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-45" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-46" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-47" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-48" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-49" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-50" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-51" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-52" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-53" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-54" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-55" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-56" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-57" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-58" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-59" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-60" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-61" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-62" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-63" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-64" class="alias-anchor" aria-hidden="true"></span>
+                    <span id="source-65" class="alias-anchor" aria-hidden="true"></span>
+                </li>
+            </ol>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="nav-buttons">
+            <button id="prev-btn" class="nav-button">PREVIOUS</button>
+            <button id="next-btn" class="nav-button">NEXT</button>
+        </div>
+        <button id="mode-toggle-btn" class="mode-button mobile-only" aria-label="Toggle Present/Report">MODE</button>
+        <div class="mode-buttons">
+            <button id="present-mode-btn" class="mode-button active">PRESENT</button>
+            <button id="report-mode-btn" class="mode-button">REPORT</button>
+        </div>
+        <div id="current-prompt" class="current-prompt">PROMPT: GENERATE REPORT ON AI NARRATIVE.</div>
+    </footer>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        let currentSlideIndex = 0;
+
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const presentModeBtn = document.getElementById('present-mode-btn');
+        const reportModeBtn = document.getElementById('report-mode-btn');
+        const modeToggleBtn = document.getElementById('mode-toggle-btn');
+        const presentationContainer = document.getElementById('presentation-container');
+        const fullReportContainer = document.getElementById('full-report-container');
+        const csuCursor = document.getElementById('csu-cursor');
+        const currentPromptElement = document.getElementById('current-prompt');
+        const glitchScreen = document.getElementById('glitch-screen');
+
+        let isPresentationMode = true;
+
+        // Custom prompts for the footer
+        const prompts = [
+            "PROMPT: INITIATE NARRATIVE DISRUPTION ENGINE.",
+            "PROMPT: AUDIT POST-CINEMATIC PARADIGMS.",
+            "PROMPT: RENDER ALGORITHMIC PERCEPTION.",
+            "PROMPT: COMPILE PROTOCOL TENETS. DEPLOY VISION.",
+            "PROMPT: REHEARSE FUTURE FRONTIERS. PERFORM SYNTAX."
+        ];
+        let currentPromptIndex = 0;
+
+        function updatePrompt() {
+            currentPromptElement.textContent = prompts[currentPromptIndex];
+            currentPromptIndex = (currentPromptIndex + 1) % prompts.length;
+        }
+
+        function showSlide(index) {
+            if (index < 0 || index >= totalSlides) return;
+
+            slides[currentSlideIndex].classList.remove('active');
+            slides[index].classList.add('active');
+            currentSlideIndex = index;
+
+            prevBtn.disabled = (currentSlideIndex === 0);
+            nextBtn.disabled = (currentSlideIndex === totalSlides - 1);
+
+            updatePrompt();
+        }
+
+        function showPresentationMode() {
+            isPresentationMode = true;
+            presentationContainer.classList.add('active');
+            fullReportContainer.classList.remove('active');
+            presentModeBtn.classList.add('active');
+            reportModeBtn.classList.remove('active');
+            slides.forEach(slide => slide.style.display = 'flex'); // Ensure slides are visible
+            showSlide(currentSlideIndex); // Show current slide in presentation mode
+            nextBtn.style.display = 'block';
+            prevBtn.style.display = 'block';
+        }
+
+        function showReportMode() {
+            isPresentationMode = false;
+            presentationContainer.classList.remove('active');
+            fullReportContainer.classList.add('active');
+            presentModeBtn.classList.remove('active');
+            reportModeBtn.classList.add('active');
+            slides.forEach(slide => slide.style.display = 'none'); // Hide slides in report mode
+            nextBtn.style.display = 'none';
+            prevBtn.style.display = 'none';
+            fullReportContainer.scrollTo(0, 0); // Scroll to top on switch
+            updatePrompt();
+        }
+
+        // Glitch effect on certain keywords
+        const glitchKeywords = document.querySelectorAll('.signal-highlight[data-original-text]');
+        glitchKeywords.forEach(el => {
+            const originalText = el.textContent; // Store current text content
+            el.setAttribute('data-original-text', originalText); // Store for glitch effect
+            el.classList.add('glitch-text'); // Add glitch class
+        });
+
+        // Custom Cursor Logic
+        document.addEventListener('mousemove', (e) => {
+            csuCursor.style.left = `${e.clientX}px`;
+            csuCursor.style.top = `${e.clientY}px`;
+        });
+
+        document.addEventListener('mouseover', (e) => {
+            const interactiveElements = ['BUTTON', 'A', '.nav-button', '.mode-button', '.glitch-text', 'IMG', '.citation-ref'];
+            const isInteractive = interactiveElements.some(selector => {
+                if (e.target.matches(selector)) return true;
+                if (e.target.closest && e.target.closest(selector)) return true;
+                return false;
+            });
+            csuCursor.classList.toggle('active', isInteractive);
+        });
+
+        document.addEventListener('mouseout', (e) => {
+             // Re-check after a brief delay, as some rapid movements can cause false negatives
+             setTimeout(() => {
+                const hoveredElement = document.elementFromPoint(e.clientX, e.clientY);
+                const interactiveElements = ['BUTTON', 'A', '.nav-button', '.mode-button', '.glitch-text', 'IMG', '.citation-ref'];
+                const isStillInteractive = hoveredElement && interactiveElements.some(selector => {
+                    if (hoveredElement.matches(selector)) return true;
+                    if (hoveredElement.closest && hoveredElement.closest(selector)) return true;
+                    return false;
+                });
+                if (!isStillInteractive) {
+                    csuCursor.classList.remove('active');
+                }
+             }, 50);
+        });
+
+
+        // Keyboard Navigation
+        document.addEventListener('keydown', (e) => {
+            if (isPresentationMode) {
+                if (e.key === 'ArrowRight' || e.key === ' ') { // Space for next
+                    nextBtn.click();
+                } else if (e.key === 'ArrowLeft') {
+                    prevBtn.click();
+                }
+            }
+        });
+
+        // Event Listeners
+        prevBtn.addEventListener('click', () => showSlide(currentSlideIndex - 1));
+        nextBtn.addEventListener('click', () => showSlide(currentSlideIndex + 1));
+        presentModeBtn.addEventListener('click', showPresentationMode);
+        reportModeBtn.addEventListener('click', showReportMode);
+        if (modeToggleBtn) {
+            modeToggleBtn.addEventListener('click', () => {
+                if (isPresentationMode) {
+                    showReportMode();
+                } else {
+                    showPresentationMode();
+                }
+            });
+        }
+
+        // Image Glitch on Slide 6 (new slide ID)
+        const slide6Image = document.querySelector('#slide-6 img');
+        if (slide6Image) {
+            slide6Image.addEventListener('mouseover', () => {
+                slide6Image.classList.add('corrupt');
+            });
+            slide6Image.addEventListener('mouseout', () => {
+                slide6Image.classList.remove('corrupt');
+            });
+        }
+
+        // Citation linking (basic scroll to source)
+        document.querySelectorAll('.citation-ref').forEach(ref => {
+            ref.addEventListener('click', function(e) {
+                if (isPresentationMode) { // Only enable linking in report mode
+                    return;
+                }
+                e.preventDefault(); // Prevent default link behavior if it's a real link
+                const sourceId = `source-${this.id.split('-')[1]}`;
+                const targetElement = document.getElementById(sourceId);
+                if (targetElement) {
+                    // Calculate offset taking into account fixed header and some padding
+                    const offset = window.innerHeight * 0.12; // Example: 12% of viewport height
+                    fullReportContainer.scrollTo({
+                        top: targetElement.offsetTop - fullReportContainer.offsetTop - offset,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+
+        // Initial setup
+        document.addEventListener('DOMContentLoaded', () => {
+            showPresentationMode(); // Start in presentation mode
+            showSlide(0); // Show the first slide
+            setInterval(updatePrompt, 5000); // Change prompt every 5 seconds
+        });
+    </script>
+</body>
+</html>
